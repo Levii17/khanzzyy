@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lukhanyo😐</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon_io/favicon-16x16.png">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden; /* Prevent any scrolling */
+      transition: background 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      height: 100vh; /* Full viewport height */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #lock-screen {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 25px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      max-height: 95vh; /* Prevent overflow */
+      overflow: hidden;
+    }
+
+    .lock-icon {
+      font-size: clamp(3rem, 10vw, 4rem); /* Responsive size */
+      transition: all 0.3s ease;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    #lock-screen h2 {
+      color: white;
+      margin: 10px 0 15px;
+      font-weight: 300;
+      font-size: clamp(1rem, 4vw, 1.2rem); /* Responsive size */
+    }
+
+    #pin-display {
+      font-size: clamp(1.8rem, 6vw, 2.5rem); /* Responsive size */
+      letter-spacing: 10px;
+      margin: 15px 0;
+      min-height: 40px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      color: white;
+      font-weight: 300;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 10px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .key {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(1.4rem, 5vw, 1.8rem); /* Responsive size */
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      color: white;
+      font-weight: 300;
+    }
+
+    /* Mobile phone keypad specific styling */
+    .key:nth-child(1) { grid-area: 1 / 1; } /* 1 */
+    .key:nth-child(2) { grid-area: 1 / 2; } /* 2 ABC */
+    .key:nth-child(3) { grid-area: 1 / 3; } /* 3 DEF */
+    .key:nth-child(4) { grid-area: 2 / 1; } /* 4 GHI */
+    .key:nth-child(5) { grid-area: 2 / 2; } /* 5 JKL */
+    .key:nth-child(6) { grid-area: 2 / 3; } /* 6 MNO */
+    .key:nth-child(7) { grid-area: 3 / 1; } /* 7 PQRS */
+    .key:nth-child(8) { grid-area: 3 / 2; } /* 8 TUV */
+    .key:nth-child(9) { grid-area: 3 / 3; } /* 9 WXYZ */
+    .key:nth-child(10) { grid-area: 4 / 1; } /* * */
+    .key:nth-child(11) { grid-area: 4 / 2; } /* 0 + */
+    .key:nth-child(12) { grid-area: 4 / 3; } /* # */
+    #backspace { grid-area: 5 / 1; } /* Backspace */
+    #enter { grid-area: 5 / 3; } /* Enter */
+
+    .key::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.2s ease;
+    }
+
+    .key:active::before {
+      transform: scale(1);
+    }
+
+    .key:active {
+      transform: scale(0.95);
+    }
+
+    .key .number {
+      font-weight: 400;
+      position: relative;
+      z-index: 1;
+    }
+
+    .key .letters {
+      font-size: clamp(0.5rem, 2vw, 0.6rem); /* Responsive size */
+      position: absolute;
+      bottom: 6px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      z-index: 1;
+    }
+
+    #backspace, #enter {
+      font-size: clamp(1.2rem, 4vw, 1.5rem); /* Responsive size */
+    }
+
+    #backspace {
+      background: rgba(255, 87, 34, 0.3);
+    }
+
+    #enter {
+      background: rgba(76, 175, 80, 0.3);
+    }
+
+    #hint {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: clamp(0.8rem, 3vw, 0.9rem); /* Responsive size */
+      margin-top: 10px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      animation: pulse 2s infinite;
+    }
+
+    #video-screen {
+      display: none;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 25px;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-height: 95vh; /* Prevent overflow */
+    }
+
+    #intro-video {
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+
+    .video-overlay {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: clamp(0.8rem, 3vw, 0.9rem); /* Responsive size */
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    #slideshow {
+      display: none;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 25px;
+      padding: 15px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      max-height: 95vh; /* Prevent overflow */
+      overflow: hidden;
+    }
+
+    .audio-controls {
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .audio-controls button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: clamp(0.8rem, 3vw, 0.9rem); /* Responsive size */
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .audio-controls button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .track-info {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(0.8rem, 3vw, 0.85rem); /* Responsive size */
+      margin: 8px 0;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      display: inline-block;
+    }
+
+    .slide {
+      display: none;
+      animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      max-height: 60vh; /* Prevent overflow */
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .polaroid {
+      border: 12px solid white;
+      border-bottom: 40px solid white;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      max-width: 100%;
+      max-height: 50vh; /* Prevent overflow */
+      height: auto;
+      transition: all 0.5s ease;
+      transform: rotate(-2deg);
+      object-fit: contain;
+    }
+
+    .slide:nth-child(even) .polaroid {
+      transform: rotate(2deg);
+    }
+
+    .slide.active .polaroid {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    .slide p {
+      margin: 15px 0;
+      color: white;
+      font-size: clamp(1rem, 4vw, 1.1rem); /* Responsive size */
+      line-height: 1.5;
+      font-weight: 300;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    #progress-bar-container {
+      background: rgba(255, 255, 255, 0.2);
+      height: 6px;
+      border-radius: 10px;
+      margin: 15px auto 10px;
+      width: 90%;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide-nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .slide-nav button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: clamp(1.5rem, 5vw, 1.8rem); /* Responsive size */
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide-nav button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-3px) scale(1.1);
+    }
+
+    #countdown {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: clamp(0.8rem, 3vw, 0.9rem); /* Responsive size */
+      margin: 10px 0;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+    }
+
+    .loading-spinner {
+      display: none;
+      margin: 15px auto;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    .shake {
+      animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+      20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+      
+      #lock-screen, #slideshow {
+        padding: 15px;
+      }
+      
+      .polaroid {
+        max-width: 90vw;
+        max-height: 45vh;
+        border-width: 8px;
+        border-bottom-width: 30px;
+      }
+      
+      .key {
+        font-size: 1.4rem;
+      }
+      
+      .key .letters {
+        font-size: 0.5rem;
+        bottom: 4px;
+      }
+      
+      #pin-display {
+        font-size: 1.8rem;
+        letter-spacing: 8px;
+        min-height: 35px;
+      }
+
+      .audio-controls {
+        gap: 8px;
+      }
+
+      .audio-controls button {
+        padding: 6px 12px;
+      }
+
+      .slide p {
+        margin: 10px 0;
+      }
+
+      .slide-nav button {
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="lock-screen">
+      <div class="lock-icon">🔒</div>
+      <h2>Enter PIN to unlock</h2>
+      <div id="pin-display" aria-live="polite"></div>
+      <div id="keypad" role="grid" aria-label="PIN keypad"></div>
+      <div id="hint" style="display:none;">Hint: It's Your Birthdate (day/month)</div>
+      <div class="loading-spinner" id="loading"></div>
+    </div>
+
+    <div id="video-screen">
+      <video id="intro-video" playsinline>
+        <source src="assets/video/vid.mp4" type="video/mp4">
+        <source src="assets/videos/intro.webm" type="video/webm">
+        Your browser doesn't support video playback.
+      </video>
+      <div class="video-overlay">Lukhanyo!!!</div>
+    </div>
+
+    <div id="slideshow">
+      <div class="audio-controls">
+        <button id="playPauseBtn" aria-label="Play or pause music">
+          <span id="playPauseIcon">▶️</span>
+          <span id="playPauseText">Play</span>
+        </button>
+        <button id="prevTrackBtn" aria-label="Previous track">⏮️ Prev</button>
+        <button id="nextTrackBtn" aria-label="Next track">⏭️ Next</button>
+        <button id="toggleLoop" aria-label="Toggle slideshow auto-loop">
+          <span id="loopIcon">➿</span>
+          <span>Auto-Loop: OFF</span>
+        </button>
+      </div>
+      
+      <div class="track-info" id="trackInfo">Track 1 of 3</div>
+      
+      <div class="slide active">
+        <img src="assets/images/pic1.jpg" alt="Memory 1" class="polaroid" loading="lazy">
+        <p>Step 1 - Khanyo, I was wrong.</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic2.jpg" alt="Memory 2" class="polaroid" loading="lazy">
+        <p>Step 2 - Khanyo, that action will never be repeated (probably...man, self-isolation is my thing) and that's a promise.</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic3.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>Step 3 - Khanzyy, i hope you can forgive me.☹️</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic4.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>me when the reality kicked in, and i realized we might actually never speak again.</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic5.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>dude. i was gonna write an apology from pinterest here, but that's so 2017 codedn, but if your for that - lemme know!😭</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic6.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>I can't live in a world w/o art lukhanyo</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic7.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>me in a world w/o art, or you yapping about random stuff</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic8.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>me after you actually blocked me😭</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic9.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>Unblock me hawu</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic10.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>idk why this is in here.</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic11.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>okay instead of 40, lets say if you haven't found your soulmate by 25.😭</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/pic12.jpg" alt="Memory 3" class="polaroid" loading="lazy">
+        <p>lol.😐</p>
+      </div>
+      <div class="slide">
+        <img src="assets/images/final_surprise.jpg" alt="Final surprise" class="polaroid" loading="lazy">
+        <p>I prolly should've put alot more effort into this, but i'm really soooo draineddd man.</p>
+      </div>
+      
+      <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+      </div>
+      
+      <div class="slide-nav">
+        <button id="prevBtn" aria-label="Previous slide">◀</button>
+        <button id="nextBtn" aria-label="Next slide">▶</button>
+      </div>
+      
+      <div id="countdown" aria-live="polite"></div>
+      
+      <audio id="bg-music" preload="metadata">
+        <source src="assets/music/track1.mp3" type="audio/mpeg">
+        <source src="assets/music/track2.mp3" type="audio/mpeg">
+        <source src="assets/music/track3.mp3" type="audio/mpeg">
+        <source src="assets/music/track4.mp3" type="audio/mpeg">
+        <source src="assets/music/track1.ogg" type="audio/ogg">
+        <source src="assets/music/track2.ogg" type="audio/ogg">
+        <source src="assets/music/track3.ogg" type="audio/ogg">
+        <source src="assets/music/track4.ogg" type="audio/ogg">
+      </audio>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
+  <script>
+    // Configuration
+    const CONFIG = {
+      pin: "1906",
+      tracks: [
+        { mp3: "assets/music/track1.mp3", ogg: "assets/music/track1.ogg", name: "Track 1" },
+        { mp3: "assets/music/track2.mp3", ogg: "assets/music/track2.ogg", name: "Track 2" },
+        { mp3: "assets/music/track3.mp3", ogg: "assets/music/track3.ogg", name: "Track 3" },
+        // { mp3: "assets/music/track4.mp3", ogg: "assets/music/track4.ogg", name: "Track 4" }
+      ]
+    };
+
+    // State management
+    const state = {
+      wrongAttempts: 0,
+      enteredPin: "",
+      currentSlide: 0,
+      currentTrack: 0,
+      autoLoop: false,
+      startDate: null,
+      confettiInterval: null,
+      isVideoPlaying: false
+    };
+
+    // DOM elements
+    const elements = {
+      lockScreen: document.getElementById('lock-screen'),
+      videoScreen: document.getElementById('video-screen'),
+      slideshow: document.getElementById('slideshow'),
+      hint: document.getElementById('hint'),
+      lockIcon: document.querySelector('.lock-icon'),
+      keypad: document.getElementById('keypad'),
+      pinDisplay: document.getElementById('pin-display'),
+      loading: document.getElementById('loading'),
+      video: document.getElementById('intro-video'),
+      audio: document.getElementById('bg-music'),
+      slides: document.querySelectorAll('.slide'),
+      progressBar: document.getElementById('progress-bar'),
+      countdown: document.getElementById('countdown'),
+      trackInfo: document.getElementById('trackInfo')
+    };
+
+    // Utility functions
+    const debounce = (func, wait) => {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    };
+
+    const preloadImages = () => {
+      const imageUrls = [
+        'assets/images/pic1.jpg',
+        'assets/images/pic2.jpg',
+        'assets/images/pic3.jpg',
+        'assets/images/final_surprise.jpg'
+      ];
+      
+      imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    };
+
+    // Audio management
+    class AudioManager {
+      constructor() {
+        this.setupAudio();
+        this.setupControls();
+      }
+
+      setupAudio() {
+        elements.audio.addEventListener('ended', () => {
+          this.nextTrack();
+        });
+
+        elements.audio.addEventListener('error', (e) => {
+          console.warn('Audio error:', e);
+          this.nextTrack();
+        });
+
+        elements.audio.addEventListener('loadstart', () => {
+          elements.trackInfo.textContent = `Loading ${CONFIG.tracks[state.currentTrack].name}...`;
+        });
+
+        elements.audio.addEventListener('canplay', () => {
+          this.updateTrackInfo();
+        });
+      }
+
+      setupControls() {
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const prevTrackBtn = document.getElementById('prevTrackBtn');
+        const nextTrackBtn = document.getElementById('nextTrackBtn');
+
+        playPauseBtn.addEventListener('click', () => this.togglePlayPause());
+        prevTrackBtn.addEventListener('click', () => this.prevTrack());
+        nextTrackBtn.addEventListener('click', () => this.nextTrack());
+      }
+
+      loadTrack(index) {
+        if (index < 0 || index >= CONFIG.tracks.length) return;
+        
+        const track = CONFIG.tracks[index];
+        elements.audio.innerHTML = `
+          <source src="${track.mp3}" type="audio/mpeg">
+          <source src="${track.ogg}" type="audio/ogg">
+        `;
+        elements.audio.load();
+        state.currentTrack = index;
+        this.updateTrackInfo();
+      }
+
+      togglePlayPause() {
+        const playPauseIcon = document.getElementById('playPauseIcon');
+        const playPauseText = document.getElementById('playPauseText');
+        
+        if (elements.audio.paused) {
+          elements.audio.play().catch(console.error);
+          playPauseIcon.textContent = '⏸️';
+          playPauseText.textContent = 'Pause';
+        } else {
+          elements.audio.pause();
+          playPauseIcon.textContent = '▶️';
+          playPauseText.textContent = 'Play';
+        }
+      }
+
+      nextTrack() {
+        const nextIndex = (state.currentTrack + 1) % CONFIG.tracks.length;
+        this.loadTrack(nextIndex);
+        if (!elements.audio.paused) {
+          setTimeout(() => elements.audio.play().catch(console.error), 100);
+        }
+      }
+
+      prevTrack() {
+        const prevIndex = state.currentTrack === 0 ? CONFIG.tracks.length - 1 : state.currentTrack - 1;
+        this.loadTrack(prevIndex);
+        if (!elements.audio.paused) {
+          setTimeout(() => elements.audio.play().catch(console.error), 100);
+        }
+      }
+
+      updateTrackInfo() {
+        elements.trackInfo.textContent = `${CONFIG.tracks[state.currentTrack].name} (${state.currentTrack + 1} of ${CONFIG.tracks.length})`;
+      }
+
+      startPlayback() {
+        this.loadTrack(0);
+        // Auto-play with user gesture fallback
+        elements.audio.play().catch(() => {
+          console.log('Autoplay prevented, user interaction required');
+        });
+      }
+    }
+
+    // Slideshow management
+    class SlideshowManager {
+      constructor() {
+        this.setupControls();
+        this.setupAutoLoop();
+      }
+
+      setupControls() {
+        document.getElementById('prevBtn').addEventListener('click', () => this.prevSlide());
+        document.getElementById('nextBtn').addEventListener('click', () => this.nextSlide());
+        
+        const toggleLoop = document.getElementById('toggleLoop');
+        toggleLoop.addEventListener('click', () => this.toggleAutoLoop());
+      }
+
+      setupAutoLoop() {
+        setInterval(() => {
+          if (state.autoLoop) {
+            this.nextSlide();
+          }
+        }, 4000);
+      }
+
+      showSlide(index) {
+        elements.slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === index);
+        });
+        
+        const progress = ((index + 1) / elements.slides.length) * 100;
+        elements.progressBar.style.width = `${progress}%`;
+        
+        state.currentSlide = index;
+      }
+
+      nextSlide() {
+        const nextIndex = (state.currentSlide + 1) % elements.slides.length;
+        this.showSlide(nextIndex);
+      }
+
+      prevSlide() {
+        const prevIndex = state.currentSlide === 0 ? elements.slides.length - 1 : state.currentSlide - 1;
+        this.showSlide(prevIndex);
+      }
+
+      toggleAutoLoop() {
+        state.autoLoop = !state.autoLoop;
+        const toggleLoop = document.getElementById('toggleLoop');
+        const loopIcon = document.getElementById('loopIcon');
+        
+        if (state.autoLoop) {
+          toggleLoop.innerHTML = '<span id="loopIcon">🔄</span><span>Auto-Loop: ON</span>';
+        } else {
+          toggleLoop.innerHTML = '<span id="loopIcon">➿</span><span>Auto-Loop: OFF</span>';
+        }
+      }
+    }
+
+    // PIN input management
+    class PinManager {
+      constructor() {
+        this.setupKeypad();
+      }
+
+      setupKeypad() {
+        // Mobile phone keypad layout with letters
+        const keypadLayout = [
+          { number: '1', letters: '' },
+          { number: '2', letters: 'ABC' },
+          { number: '3', letters: 'DEF' },
+          { number: '4', letters: 'GHI' },
+          { number: '5', letters: 'JKL' },
+          { number: '6', letters: 'MNO' },
+          { number: '7', letters: 'PQRS' },
+          { number: '8', letters: 'TUV' },
+          { number: '9', letters: 'WXYZ' },
+          { number: '*', letters: '' },
+          { number: '0', letters: '+' },
+          { number: '#', letters: '' }
+        ];
+
+        // Create the standard mobile keypad layout (3x4 grid plus controls)
+        keypadLayout.forEach((key, index) => {
+          const button = document.createElement('button');
+          button.className = 'key';
+          button.setAttribute('role', 'gridcell');
+          button.setAttribute('aria-label', `${key.number} ${key.letters}`);
+          
+          // Mobile phone keypad styling with number and letters
+          button.innerHTML = `
+            <div class="number">${key.number}</div>
+            ${key.letters ? `<div class="letters">${key.letters}</div>` : ''}
+          `;
+          
+          // Only add digits 0-9 to PIN, ignore * and #
+          if (key.number >= '0' && key.number <= '9') {
+            button.addEventListener('click', () => this.addDigit(key.number));
+          } else {
+            // Style * and # keys differently but make them non-functional for PIN
+            button.style.opacity = '0.6';
+            button.style.cursor = 'default';
+          }
+          
+          elements.keypad.appendChild(button);
+        });
+
+        // Add backspace button (spans one grid cell)
+        const backspaceBtn = document.createElement('button');
+        backspaceBtn.className = 'key';
+        backspaceBtn.id = 'backspace';
+        backspaceBtn.setAttribute('aria-label', 'Backspace');
+        backspaceBtn.innerHTML = '<div class="number">⌫</div>';
+        backspaceBtn.addEventListener('click', () => this.removeDigit());
+        elements.keypad.appendChild(backspaceBtn);
+
+        // Add enter button (spans one grid cell)
+        const enterBtn = document.createElement('button');
+        enterBtn.className = 'key';
+        enterBtn.id = 'enter';
+        enterBtn.setAttribute('aria-label', 'Enter PIN');
+        enterBtn.innerHTML = '<div class="number">✓</div>';
+        enterBtn.addEventListener('click', () => this.checkPin());
+        elements.keypad.appendChild(enterBtn);
+      }
+
+      addDigit(digit) {
+        if (state.enteredPin.length < CONFIG.pin.length) {
+          state.enteredPin += digit;
+          this.updateDisplay();
+          
+          if (state.enteredPin.length === CONFIG.pin.length) {
+            setTimeout(() => this.checkPin(), 200);
+          }
+        }
+      }
+
+      removeDigit() {
+        state.enteredPin = state.enteredPin.slice(0, -1);
+        this.updateDisplay();
+      }
+
+      updateDisplay() {
+        elements.pinDisplay.textContent = '*'.repeat(state.enteredPin.length);
+      }
+
+      checkPin() {
+        if (state.enteredPin === CONFIG.pin) {
+          this.unlock();
+        } else {
+          this.handleWrongPin();
+        }
+      }
+
+      handleWrongPin() {
+        state.wrongAttempts++;
+        state.enteredPin = "";
+        this.updateDisplay();
+        
+        if (state.wrongAttempts >= 3) {
+          elements.hint.style.display = "block";
+        }
+        
+        // Visual feedback
+        elements.lockScreen.classList.add('shake');
+        setTimeout(() => elements.lockScreen.classList.remove('shake'), 600);
+      }
+
+      unlock() {
+        elements.loading.style.display = 'block';
+        elements.lockIcon.textContent = "🔓";
+        elements.lockIcon.style.transform = "rotate(20deg)";
+        
+        setTimeout(() => {
+          elements.lockScreen.style.display = "none";
+          this.playIntroVideo();
+        }, 800);
+      }
+
+      playIntroVideo() {
+        elements.videoScreen.style.display = "block";
+        state.isVideoPlaying = true;
+        
+        // Try to play video
+        elements.video.play().then(() => {
+          console.log('Video started playing');
+        }).catch((error) => {
+          console.log('Video autoplay failed, skipping to slideshow:', error);
+          this.startSlideshow();
+        });
+
+        elements.video.addEventListener('ended', () => {
+          this.startSlideshow();
+        }, { once: true });
+
+        // Fallback timeout
+        setTimeout(() => {
+          if (state.isVideoPlaying) {
+            this.startSlideshow();
+          }
+        }, 51000); // 51 seconds for 49s video with buffer
+      }
+
+      startSlideshow() {
+        state.isVideoPlaying = false;
+        elements.videoScreen.style.display = "none";
+        elements.slideshow.style.display = "block";
+        
+        this.startConfetti();
+        state.startDate = new Date();
+        this.updateCountdown();
+        setInterval(() => this.updateCountdown(), 24 * 60 * 60 * 1000);
+        
+        // Start audio and slideshow
+        audioManager.startPlayback();
+        slideshowManager.showSlide(0);
+      }
+
+      startConfetti() {
+        if (window.confetti) {
+          confetti({ 
+            particleCount: 200, 
+            spread: 80, 
+            origin: { y: 0.6 },
+            colors: ['#667eea', '#764ba2', '#f093fb', '#f5576c']
+          });
+          
+          if (!state.confettiInterval) {
+            state.confettiInterval = setInterval(() => {
+              confetti({ 
+                particleCount: 50, 
+                spread: 120,
+                origin: { y: 0.6 },
+                colors: ['#667eea', '#764ba2', '#f093fb', '#f5576c']
+              });
+            }, 8000);
+          }
+        }
+      }
+
+      updateCountdown() {
+        if (!state.startDate) return;
+        const now = new Date();
+        const days = Math.floor((now - state.startDate) / (1000 * 60 * 60 * 24));
+        elements.countdown.textContent = `${days} days w/out going ghost.`;
+      }
+    }
+
+    // Initialize managers
+    const pinManager = new PinManager();
+    const audioManager = new AudioManager();
+    const slideshowManager = new SlideshowManager();
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (elements.lockScreen.style.display !== 'none') {
+        if (e.key >= '0' && e.key <= '9') {
+          pinManager.addDigit(e.key);
+        } else if (e.key === 'Backspace') {
+          pinManager.removeDigit();
+        } else if (e.key === 'Enter') {
+          pinManager.checkPin();
+        }
+      } else if (elements.slideshow.style.display !== 'none') {
+        switch(e.key) {
+          case 'ArrowLeft':
+            slideshowManager.prevSlide();
+            break;
+          case 'ArrowRight':
+            slideshowManager.nextSlide();
+            break;
+          case ' ':
+            e.preventDefault();
+            audioManager.togglePlayPause();
+            break;
+          case 'ArrowUp':
+            audioManager.prevTrack();
+            break;
+          case 'ArrowDown':
+            audioManager.nextTrack();
+            break;
+        }
+      }
+    });
+
+    // Touch gestures for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      if (elements.slideshow.style.display !== 'none') {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+          if (diff > 0) {
+            slideshowManager.nextSlide();
+          } else {
+            slideshowManager.prevSlide();
+          }
+        }
+      }
+    }
+
+    // Performance optimizations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          if (img.dataset.src && !img.src) {
+            img.src = img.dataset.src;
+            observer.unobserve(img);
+          }
+        }
+      });
+    });
+
+    // Lazy load images
+    document.querySelectorAll('img[data-src]').forEach(img => {
+      observer.observe(img);
+    });
+
+    // Error handling
+    window.addEventListener('error', (e) => {
+      console.error('App error:', e.error);
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (state.confettiInterval) {
+        clearInterval(state.confettiInterval);
+      }
+      if (elements.audio) {
+        elements.audio.pause();
+      }
+    });
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', () => {
+      preloadImages();
+      pinManager.updateDisplay();
+      
+      // Set initial focus for accessibility
+      if (elements.keypad.firstElementChild) {
+        elements.keypad.firstElementChild.focus();
+      }
+    });
+
+    // Service Worker for caching (optional)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => console.log('SW registered'))
+          .catch(error => console.log('SW registration failed'));
+      });
+    }
+  </script>
+</body>
+</html>
